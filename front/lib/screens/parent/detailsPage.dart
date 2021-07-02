@@ -72,97 +72,100 @@ class _DetailsPageState extends State<DetailsPage> {
         top: 250.0,
         left: 25.0,
         right: 25.0,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(demande.first_name + " " + demande.last_name,
-                style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold)),
-            SizedBox(height: 10.0),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(demande.first_name + " " + demande.last_name,
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold)),
+              SizedBox(height: 10.0),
 
-            //buildInfoList(),
-            Container(
-              height: 200.0,
-              child: ListView(
-                scrollDirection: Axis.vertical,
-                children: <Widget>[
-                  firstRow(context),
-                  _buildinfo(Icons.info, demande?.cin),
-                  SizedBox(height: 15.0),
-                  _buildinfo(Icons.home, widget.adresse),
-                  SizedBox(height: 15.0),
-                  _buildinfo(Icons.phone, demande?.phone),
-                  SizedBox(height: 15.0),
-                  _buildinfo(Icons.mail, demande?.email),
-                  SizedBox(height: 12.0),
-                  _buildinfo(Icons.code, widget.demande.code.toString()),
-                  SizedBox(height: 12.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      RaisedButton(
-                        color: backgroundColor,
-                        child: Text(
-                          "Check Progress",
-                          style: TextStyle(color: Colors.white),
+              //buildInfoList(),
+              Expanded(
+                child: ListView(
+                  scrollDirection: Axis.vertical,
+                  children: <Widget>[
+                    firstRow(context),
+                    _buildinfo(Icons.info, demande?.cin),
+                    SizedBox(height: 15.0),
+                    _buildinfo(Icons.home, widget.adresse),
+                    SizedBox(height: 15.0),
+                    _buildinfo(Icons.phone, demande?.phone),
+                    SizedBox(height: 15.0),
+                    _buildinfo(Icons.mail, demande?.email),
+                    SizedBox(height: 12.0),
+                    _buildinfo(Icons.code, widget.demande.code.toString()),
+                    SizedBox(height: 12.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        RaisedButton(
+                          color: backgroundColor,
+                          child: Text(
+                            "Voir Progrés",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () {
+                            createAlertDialog(context);
+                          },
                         ),
-                        onPressed: () {
-                          createAlertDialog(context);
-                        },
-                      ),
-                      RaisedButton(
-                        color: Colors.redAccent,
-                        child: Text(
-                          "désaffecter",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: this.affiliation.toLowerCase() ==
-                                "non assigné"
-                            ? null
-                            : () async {
-                                bool confirm = await showDialog<bool>(
-                                    context: context,
-                                    builder: (_) {
-                                      return AlertDialog(
-                                        content: Text(
-                                            "Voulez vous vraimer supprimer l'affectation pour cette demande ?"),
-                                        actions: <Widget>[
-                                          FlatButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop(true);
-                                              },
-                                              child: Text("Oui")),
-                                          FlatButton(
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop(false);
-                                              },
-                                              child: Text("Non"))
-                                        ],
-                                      );
+                        RaisedButton(
+                          color: Colors.redAccent,
+                          child: Text(
+                            "désaffecter",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: this.affiliation.toLowerCase() ==
+                                  "non assigné"
+                              ? null
+                              : () async {
+                                  bool confirm = await showDialog<bool>(
+                                      context: context,
+                                      builder: (_) {
+                                        return AlertDialog(
+                                          content: Text(
+                                              "Voulez vous vraimer supprimer l'affectation pour cette demande ?"),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .pop(true);
+                                                },
+                                                child: Text("Oui")),
+                                            FlatButton(
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .pop(false);
+                                                },
+                                                child: Text("Non"))
+                                          ],
+                                        );
+                                      });
+                                  if (confirm) {
+                                    dynamic result = await locator<ApiService>()
+                                        .editOrder(widget.heroTag,
+                                            info: {'affiliate_id': null});
+                                    if (result == null) {
+                                      showErrorDialog();
+                                      return;
+                                    }
+                                    setState(() {
+                                      this.affiliation = "non assigné";
                                     });
-                                if (confirm) {
-                                  dynamic result = await locator<ApiService>()
-                                      .editOrder(widget.heroTag,
-                                          info: {'affiliate_id': null});
-                                  if (result == null) {
-                                    showErrorDialog();
-                                    return;
                                   }
-                                  setState(() {
-                                    this.affiliation = "non assigné";
-                                  });
-                                }
-                              },
-                      ),
-                    ],
-                  ),
-                ],
+                                },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ));
   }
 

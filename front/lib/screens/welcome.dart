@@ -55,7 +55,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     MyButton(
                       fill: true,
                       label: "login",
-                      function: (){ Navigator.pushNamed(context, '/login'); },
+                      function: () {
+                        Navigator.pushNamed(context, '/login');
+                      },
                       color: myColor,
                       margin: 20.0,
                       route: "/login",
@@ -66,7 +68,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     MyButton(
                       fill: false,
                       label: "signup",
-                      function:()=> Navigator.pushNamed(context, '/signup'),
+                      function: () => Navigator.pushNamed(context, '/signup'),
                       margin: 20.0,
                       route: "/signup",
                     ),
@@ -110,9 +112,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           text: "Bienvenue à ",
           style: buildTextStyle(),
           children: <InlineSpan>[
-            buildTextSpan("RE", myColor),
-            buildTextSpan("/", Colors.redAccent),
-            buildTextSpan("MAX", myColor),
+            buildTextSpan("RE", Colors.redAccent),
+            buildTextSpan("/", myColor),
+            buildTextSpan("MAX", Colors.redAccent),
           ]),
     );
   }

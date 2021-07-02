@@ -27,7 +27,7 @@ class ApiService {
   }
 
 //static const endpoint = "http://10.0.2.2:8000/api";
-  static const endpoint = "http://51.178.54.128:9100/api";
+  static const endpoint = "http://151.80.123.213:8000/api";
 //get User
   Future<dynamic> getUser(String id) async {
     try {

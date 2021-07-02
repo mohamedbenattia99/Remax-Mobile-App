@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   //static const endpoint = "http://10.0.2.2:8000/api";
-  static const endpoint = "http://51.178.54.128:9100/api";
+  static const endpoint = "http://151.80.123.213:8000/api";
   static String _token = "";
   Future<dynamic> changePassword(Map<String, dynamic> info) async {
     try {

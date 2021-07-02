@@ -20,10 +20,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final  _fomrKey = GlobalKey<FormState>();
+  final _fomrKey = GlobalKey<FormState>();
   AuthModel model = locator<AuthModel>();
-  String _email ;
-  String _password ;
+  String _email;
+  String _password;
   static final myColor = _colorFromHex("#2C3DA5");
 
   bool obscureText = true;
@@ -64,23 +64,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   icon: fv.MaterialCommunityIcons.key, label: "Password"),
               mySizedBox20(),
               ChangeNotifierProvider(
-                create: (context)=>model ,
-                    child: Consumer<AuthModel>( builder:(_,model,__)=>  model.load ? MyButton(
-                  function: login,
-                  fill: true,
-                  label: "login",
-                  backgroundColor: myColor,
-                  width: width * 0.8,
-                  height: height*0.07,
-                ) : SpinKitCircle(color: myColor )
-              )),
+                  create: (context) => model,
+                  child: Consumer<AuthModel>(
+                      builder: (_, model, __) => model.load
+                          ? MyButton(
+                              function: login,
+                              fill: true,
+                              label: "login",
+                              backgroundColor: myColor,
+                              width: width * 0.8,
+                              height: height * 0.07,
+                            )
+                          : SpinKitCircle(color: myColor))),
               SizedBox(
                 height: 20.0,
               ),
               MyDivider(width: width),
               mySizedBox20(),
               MyButton(
-                function: ()=>Navigator.pushNamed(context, '/signup'),
+                function: () => Navigator.pushNamed(context, '/signup'),
                 fill: false,
                 label: "signup",
                 color: myColor,
@@ -93,52 +95,65 @@ class _LoginScreenState extends State<LoginScreen> {
           )),
     );
   }
-   
+
   login() async {
-    if(_fomrKey.currentState.validate()){
-     _fomrKey.currentState.save();
+    if (_fomrKey.currentState.validate()) {
+      _fomrKey.currentState.save();
       dynamic result = await model.login(_email, _password);
-      print("from login widget"  );
-      
-       if(result==null) {
-         showErrorDialog(
-           mssj: "un problém est survenu lors de connexion."
-         ) ;
-         return ;
-       } 
-        Navigator.pushReplacement(context, MaterialPageRoute(builder:(_){
-             switch(model.result.role){
-               case "affiliate" : return ListeClients_fils(user: model.result);
-               case "client": return DemandesClient(user:model.result);
-               case "parent_company" : return ListeClients(user:model.result);
-             } 
-        }));
-      
+      print("from login widget");
+
+      if (result == null) {
+        showErrorDialog(mssj: "un problém est survenu lors de connexion.");
+        return;
+      }
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+        switch (model.result.role) {
+          case "affiliate":
+            return ListeClients_fils(user: model.result);
+          case "client":
+            return DemandesClient(user: model.result);
+          case "parent_company":
+            return ListeClients(user: model.result);
+        }
+      }));
     }
   }
+
   Future<void> showErrorDialog({String mssj}) async {
-      showDialog(context: context,
-    barrierDismissible: false,
-    builder: (_) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        content: Text( mssj ?? "un problém est survenu lors de changement de phase"),
-      );
-    });
-    Timer(Duration(seconds: 2), (){
-      
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            content: Text(
+                mssj ?? "un problém est survenu lors de changement de phase"),
+          );
+        });
+    Timer(Duration(seconds: 2), () {
       Navigator.of(context).pop();
     });
-   }
+  }
+
   SizedBox mySizedBox20() => SizedBox(height: 20.0);
-dynamic _validator(String value, {String label}) {
-    switch(label){
-      case "Password": return validators.isAlphanumeric(value) ? null : "le mot de passe est non valide ";
-      case "remax@gmail.com": return validators.isEmail(value.trim()) ? null : "l'email est non valide ";
-      case "Phone": return value.length == 8 ? null : "le numéro est non valide ";
-      case "cin": return value.length == 8 ? null : "le cin est non valide ";
-      default : return value.length >= 4 ? null : "4 char minimum"; 
+  dynamic _validator(String value, {String label}) {
+    switch (label) {
+      case "Password":
+        return validators.isAlphanumeric(value)
+            ? null
+            : "le mot de passe est non valide ";
+      case "remax@gmail.com":
+        return validators.isEmail(value.trim())
+            ? null
+            : "l'email est non valide ";
+      case "Phone":
+        return value.length == 8 ? null : "le numéro est non valide ";
+      case "cin":
+        return value.length == 8 ? null : "le cin est non valide ";
+      default:
+        return value.length >= 4 ? null : "4 char minimum";
     }
   }
   // Container buildForgotPassword(double width) {
@@ -197,11 +212,11 @@ dynamic _validator(String value, {String label}) {
       textAlignVertical: TextAlignVertical.center,
       onChanged: (value) {
         setState(() {
-          if(label=="Password"){
-            _password = value ;
-            return ;
+          if (label == "Password") {
+            _password = value;
+            return;
           }
-          _email = value ;
+          _email = value;
         });
       },
       validator: (value) => _validator(value, label: label ?? ""),
@@ -212,10 +227,16 @@ dynamic _validator(String value, {String label}) {
   InputDecoration inputDecoration(IconData icon, String label) {
     return InputDecoration(
       labelText: label ?? "",
-      suffixIcon: label=="Password" ?  IconButton(icon: Icon(icon,color:Colors.indigo), onPressed: ()=>setState((){
-        obscureText=!obscureText ;
-      })):Icon(icon ?? fv.FontAwesome5Regular.stop_circle,color:Colors.indigo),
-       errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.redAccent)),
+      suffixIcon: label == "Password"
+          ? IconButton(
+              icon: Icon(icon, color: Colors.indigo),
+              onPressed: () => setState(() {
+                    obscureText = !obscureText;
+                  }))
+          : Icon(icon ?? fv.FontAwesome5Regular.stop_circle,
+              color: Colors.indigo),
+      errorBorder:
+          OutlineInputBorder(borderSide: BorderSide(color: Colors.redAccent)),
       enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
           borderSide: BorderSide(
@@ -224,8 +245,6 @@ dynamic _validator(String value, {String label}) {
           )),
     );
   }
-
-  
 
   dynamic _passwordValidator(String value) {
     return value.isEmpty ? "enter password" : null;
@@ -248,7 +267,7 @@ dynamic _validator(String value, {String label}) {
   TextStyle buildTextStyle() {
     return TextStyle(shadows: [
       Shadow(color: Colors.black, offset: Offset(.5, .5), blurRadius: 2)
-    ], color: myColor, fontWeight: FontWeight.bold, fontSize: 23.0);
+    ], color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 23.0);
   }
 
   TextSpan buildTextSpan(String text, Color color) {
@@ -263,8 +282,8 @@ dynamic _validator(String value, {String label}) {
     return RichText(
       text:
           TextSpan(text: "RE", style: buildTextStyle(), children: <InlineSpan>[
-        buildTextSpan("/", Colors.redAccent),
-        buildTextSpan("MAX", myColor),
+        buildTextSpan("/", myColor),
+        buildTextSpan("MAX", Colors.redAccent),
       ]),
     );
   }

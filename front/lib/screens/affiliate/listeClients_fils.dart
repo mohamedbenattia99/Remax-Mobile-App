@@ -15,11 +15,12 @@ import "package:dio/dio.dart";
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import "../../view/demande_view.dart";
-import "package:flutter_vector_icons/flutter_vector_icons.dart" as fv ;
+import "package:flutter_vector_icons/flutter_vector_icons.dart" as fv;
 
 import '../profile.dart';
+
 class ListeClients_fils extends StatefulWidget {
-  final UserModel user ;
+  final UserModel user;
   ListeClients_fils({this.user});
   @override
   _ListeClients_filsState createState() => _ListeClients_filsState();
@@ -42,92 +43,116 @@ class _ListeClients_filsState extends State<ListeClients_fils> {
     });
   }
   profile() async {
-    await Navigator.push(context,MaterialPageRoute(builder: (_){
+    await Navigator.push(context, MaterialPageRoute(builder: (_) {
       return Profile(user: user);
     }));
     dynamic result = await locator<ApiService>().getUser(user.id);
     print("parent widget");
     print(result);
-    if(result==null) return ;
+    if (result == null) return;
     setState(() {
-      user = result ;
+      user = result;
     });
   }
+
   Widget buildDrawer(double deviceHeight, double deviceWidth) {
     return Theme(
-            data: ThemeData.dark(),
-              child: Drawer(
-              child: Container(
-                color:  _colorFromHex("#172B4D"),
-                child: Column(
-                    children:<Widget> [
-                    DrawerHeader(
-                      child:Container(
-                        height: deviceHeight*0.3,
-                        width: deviceWidth*0.8,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                            CircleAvatar(
-                              backgroundColor: Colors.white,
-                              radius: 40,
-                              child: Text("${user.first_name[0].toUpperCase()}${user.last_name[0].toUpperCase()}",style:TextStyle(
-                                fontSize:20,
-                                fontWeight: FontWeight.bold
-                              )),
-                            ),
-                            Text("Bonjour ${user.first_name}",style:TextStyle(fontSize: 20))
-                          ],),
-                        ) ,
-                    )),
-                    Container(
-                     child : Align(
-                     alignment: Alignment.topLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          DrawerItem(icon: fv.MaterialCommunityIcons.account,label:"Profile",function: ()=>profile(),),
-                          DrawerItem(icon: Icons.add_box,label:"Ajouter une demande",function: ()=>ajouterUnOrdre(model,context,widget),),
-                          DrawerItem(icon: fv.MaterialCommunityIcons.logout,label:"Deconnexion",function:()=>deconnexion()),
-                        ],
-                      ),
-                    ))
-                    
-                  ]
+      data: ThemeData.dark(),
+      child: Drawer(
+        child: Container(
+          color: _colorFromHex("#172B4D"),
+          child: Column(children: <Widget>[
+            DrawerHeader(
+                child: Container(
+              height: deviceHeight * 0.3,
+              width: deviceWidth * 0.8,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 40,
+                      child: Text(
+                          "${user.first_name[0].toUpperCase()}${user.last_name[0].toUpperCase()}",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
+                    Text("Bonjour ${user.first_name}",
+                        style: TextStyle(fontSize: 20))
+                  ],
                 ),
               ),
-            ),
-          );
+            )),
+            Container(
+                child: Align(
+              alignment: Alignment.topLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DrawerItem(
+                    icon: fv.MaterialCommunityIcons.account,
+                    label: "Profile",
+                    function: () => profile(),
+                  ),
+                  DrawerItem(
+                    icon: Icons.add_box,
+                    label: "Ajouter une demande",
+                    function: () => ajouterUnOrdre(model, context, widget),
+                  ),
+                  DrawerItem(
+                      icon: fv.MaterialCommunityIcons.logout,
+                      label: "Deconnexion",
+                      function: () => deconnexion()),
+                ],
+              ),
+            ))
+          ]),
+        ),
+      ),
+    );
   }
-  
-  deconnexion(){
+
+  deconnexion() {
     showDialog(
-    barrierDismissible: true,
-    context: context, builder: (_){
-    return AlertDialog(
-    content: Text("voulez-vous vraiment déconnecter ?"),
-                          actions: <Widget>[
-                            FlatButton(onPressed: (){
-                               Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=>LoginScreen()),(Route rout)=>false);
-                            }, child: Text("oui")),
-                            FlatButton(onPressed: (){
-                              Navigator.of(context).pop();
-                            }, child: Text("non"))
-                          ],
-                        );
-                      });
+        barrierDismissible: true,
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            content: Text("voulez-vous vraiment déconnecter ?"),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => LoginScreen()),
+                        (Route rout) => false);
+                  },
+                  child: Text("oui")),
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("non"))
+            ],
+          );
+        });
   }
-  ajouterUnOrdre(model,context,widget) async {                 
-      await Navigator.push(context,MaterialPageRoute(builder: (_){
-      return AddClient(parentId: user.id,clientId: "",affiliateId: "",);
-                  }));
-      model.getOrders();             
-}
+
+  ajouterUnOrdre(model, context, widget) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (_) {
+      return AddClient(
+        parentId: user.id,
+        clientId: "",
+        affiliateId: "",
+      );
+    }));
+    model.getOrders();
+  }
+
   List<Demande> demandes; //**You are going to full the list of demandes here */
-  
-  
+
   Color backgroundColor;
 
   //***********Seach Bar*************/
@@ -135,9 +160,10 @@ class _ListeClients_filsState extends State<ListeClients_fils> {
   final dio = new Dio(); // for http requests
   String _searchText = "";
   List<Demande> names = new List<Demande>();
-  List<Demande> filteredNames = new List<Demande>(); // names filtered by search text
+  List<Demande> filteredNames =
+      new List<Demande>(); // names filtered by search text
   Icon _searchIcon = new Icon(Icons.search);
-  Widget _appBarTitle = new Text('Demandes filliale fils');
+  Widget _appBarTitle = new Text('Demandes filliale');
   bool isSearching = false;
 
   void _searchPressed() {
@@ -171,8 +197,8 @@ class _ListeClients_filsState extends State<ListeClients_fils> {
       demandeListViewModel: DemandeListViewModel(
         demandeList: DemandeList(demandes: model.demandes ?? []),
       ),
-      tag:user.role,
-      smodel:model,
+      tag: user.role,
+      smodel: model,
     );
   }
 
@@ -194,9 +220,9 @@ class _ListeClients_filsState extends State<ListeClients_fils> {
       itemBuilder: (BuildContext context, int index) {
         print("from list client fils widget");
         print(model);
-        return  DemandeView(
+        return DemandeView(
           demandeViewModel: DemandeViewModel(demande: filteredNames[index]),
-          tag:user.role,
+          tag: user.role,
           smodel: model,
         );
       },
@@ -204,15 +230,14 @@ class _ListeClients_filsState extends State<ListeClients_fils> {
   }
 
   void _getNames() async {
-    if(model.demandes !=null){
-    List<Demande> tempList = new List<Demande>();
-    for (int i = 0; i < model.demandes.length; i++) {
-      tempList.add(model.demandes[i]);
-    }
-    
+    if (model.demandes != null) {
+      List<Demande> tempList = new List<Demande>();
+      for (int i = 0; i < model.demandes.length; i++) {
+        tempList.add(model.demandes[i]);
+      }
+
       names = tempList;
       filteredNames = names;
-   
     }
   }
 
@@ -222,16 +247,15 @@ class _ListeClients_filsState extends State<ListeClients_fils> {
     final hexCode = hexColor.replaceAll('#', '');
     return Color(int.parse('FF$hexCode', radix: 16));
   }
-  UserModel user ;
+
+  UserModel user;
   @override
   void initState() {
     backgroundColor = _colorFromHex("#172B4D");
     super.initState();
     demandes = new List<Demande>();
     model.getOrders(widget.user.id);
-    this.user = widget.user ;
-
-    
+    this.user = widget.user;
   }
 
   @override
@@ -241,8 +265,8 @@ class _ListeClients_filsState extends State<ListeClients_fils> {
     return SafeArea(
       child: WillPopScope(
         onWillPop: () async => false,
-          child: Scaffold(
-            drawer: buildDrawer(deviceHeight, deviceWidth),
+        child: Scaffold(
+          drawer: buildDrawer(deviceHeight, deviceWidth),
           appBar: AppBar(
             backgroundColor: backgroundColor,
             title: _appBarTitle,
@@ -260,67 +284,79 @@ class _ListeClients_filsState extends State<ListeClients_fils> {
             onRefresh: () async {
               return await model.getOrders(widget.user.id);
             },
-                      child: ChangeNotifierProvider.value(
+            child: ChangeNotifierProvider.value(
                 value: model,
-                child : Consumer<SubModel> ( builder: (_,model,child){
+                child: Consumer<SubModel>(builder: (_, model, child) {
                   this._getNames();
                   return (isSearching)
-                ? Container(
-                    child: _buildList(),
-                  )
-                : ListView(
-                    children: <Widget>[
-                      SizedBox(height: 25.0),
-                      Padding(
-                        padding: EdgeInsets.only(left: 40.0),
-                        child: Row(
+                      ? Container(
+                          child: _buildList(),
+                        )
+                      : ListView(
                           children: <Widget>[
+                            SizedBox(height: 25.0),
+                            Padding(
+                              padding: EdgeInsets.only(left: 40.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: new BorderRadius.all(
+                                          Radius.circular(30)),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/remax-logo.png",
+                                      width: deviceWidth * .6,
+                                      height: deviceHeight * .1,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 40.0),
                             Container(
+                              height:
+                                  MediaQuery.of(context).size.height - 185.0,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius:
-                                    new BorderRadius.all(Radius.circular(30)),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(75.0)),
                               ),
-                              child: Image.asset(
-                                "assets/remax-logo.png",
-                                width: deviceWidth * .6,
-                                height: deviceHeight * .1,
+                              child: ListView(
+                                primary: false,
+                                padding: EdgeInsets.only(left: 25.0),
+                                children: <Widget>[
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(top: 45.0, right: 15),
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height -
+                                              300.0,
+                                      child: !model.listload
+                                          ? SpinKitCircle(
+                                              color: Colors.indigo,
+                                            )
+                                          : listeDemande(),
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                           ],
-                        ),
-                      ),
-                      SizedBox(height: 40.0),
-                      Container(
-                        height: MediaQuery.of(context).size.height - 185.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              BorderRadius.only(topLeft: Radius.circular(75.0)),
-                        ),
-                        child: ListView(
-                          primary: false,
-                          padding: EdgeInsets.only(left: 25.0),
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(top: 45.0, right: 15),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height - 300.0,
-                                child:  !model.listload ? SpinKitCircle(color: Colors.indigo,): listeDemande(),
-                              ),
-                            ),
-                          
-                          ],
-                        ),
-                      )
-                    ],
-                );})),
+                        );
+                })),
           ),
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.blue,
             onPressed: () async {
-              await Navigator.push(context, MaterialPageRoute(builder: (_){
-                return AddClient(clientId: "",parentId: "",affiliateId: user.id,);
+              await Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return AddClient(
+                  clientId: "",
+                  parentId: "",
+                  affiliateId: user.id,
+                );
               }));
               model.getOrders(user.id);
             },

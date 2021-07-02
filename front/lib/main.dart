@@ -8,9 +8,10 @@ import 'package:authentification/screens/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-void main() { 
+void main() {
   setupLocator();
-  return runApp(MyApp());}
+  return runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -20,9 +21,9 @@ class MyApp extends StatelessWidget {
       "/home": (context) => WelcomeScreen(),
       "/login": (context) => LoginScreen(),
       "/ajout-filiale": (context) => SignUpScreen(),
-      "/signup":(context)=>SignUpClientScreen(),
+      "/signup": (context) => SignUpClientScreen(),
       '/welcome': (context) => WelcomeScreen(),
-      "/list_etapes":(context)=> ItineraryApp(),
+      "/list_etapes": (context) => ItineraryApp(),
     };
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -42,7 +43,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
